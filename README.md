@@ -36,7 +36,7 @@ result: {"tips":"this is a restful api with authorized", "code":1}
 ```
 2. 验证未受保护url
 ```
-http://localhost:8080/api1/test
+http://localhost:8080/api1/test 
 ```
 
 # 备注
