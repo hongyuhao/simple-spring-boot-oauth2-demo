@@ -38,3 +38,6 @@ result: {"tips":"this is a restful api with authorized", "code":1}
 ```
 http://localhost:8080/api1/test
 ```
+
+# 备注
+此项目结构目前相对比较简单，客户端账号暂时通过写死的方式，存储token暂时使用默认的InMemoryTokenService, 后续将上传通过数据库获取授权客户端的方式，敬请关注。如有需要改进的获取有其他意见可与本人联系，邮箱：hyhsoftware@163.com
