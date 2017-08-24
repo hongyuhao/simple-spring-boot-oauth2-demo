@@ -46,7 +46,7 @@ public class SecurityServerConfiguration {
             /**
              * 配置待授权的资源链接，可使用antMatchers配置多个
              */
-            http.authorizeRequests().antMatchers("/api").authenticated();
+            http.authorizeRequests().antMatchers("/api/**").authenticated();
         }
 
     }
