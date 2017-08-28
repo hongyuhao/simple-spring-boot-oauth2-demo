@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- mysql包位置 -->
+    <classPathEntry location="/Users/yuhaohong/.m2/repository/mysql/mysql-connector-java/5.1.29/mysql-connector-java-5.1.29.jar" />
+
+    <!-- 定义数据库连接 -->
+    <context id="mysqlTables" targetRuntime="MyBatis3">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf8"
+                        userId="root"
+                        password="">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <!-- 存放实体类的目录 -->
+        <javaModelGenerator targetPackage="com.hyh.api.entity" targetProject="/Users/yuhaohong/work/git/simple-spring-boot-security-demo/src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+        <!-- 存放sqlMap的目录 -->
+        <sqlMapGenerator targetPackage="sqlmap"  targetProject="/Users/yuhaohong/work/git/simple-spring-boot-security-demo/src/main/resources">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </sqlMapGenerator>
+        <!-- 存放mapper类目录 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hyh.api.dao"  targetProject="/Users/yuhaohong/work/git/simple-spring-boot-security-demo/src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+        <!-- 声明待生成代码的表 -->
+        <table tableName="action_log" domainObjectName="ActionLog" enableSelectByExample="false"
+               enableDeleteByExample="false" enableCountByExample="false" enableUpdateByExample="false" selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="MYSQL" identity="true" />
+        </table>
+
+    </context>
+</generatorConfiguration>

@@ -14,12 +14,15 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * 配置资源服务器和授权服务器
  * @author hyhsoftware@163.com
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class SecurityServerConfiguration {
 
@@ -60,35 +63,25 @@ public class SecurityServerConfiguration {
             AuthorizationServerConfigurerAdapter {
 
         private TokenStore tokenStore;
+        @Resource
+        private DataSource dataSource;
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints)
                 throws Exception {
             /**
-             * 可以在这里配置自定义的userDetailsService, clientDetailsServices等，详细可以参看endpoints的源码即可
+             * 配置jdbc令牌策略
              */
-            tokenStore = new InMemoryTokenStore();
+            tokenStore = new JdbcTokenStore(dataSource);
             endpoints.tokenStore(tokenStore);
         }
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            clients
-                    .inMemory()
-                    .withClient("app1")
-                    // 配置获取客户端获取token的方式，也就是grant_type参数
-                    .authorizedGrantTypes( "refresh_token", "client_credentials", "password")
-                    .authorities("USER")
-                    .scopes("read", "write")
-                    .resourceIds(RESOURCE_ID)
-                    .secret("123456")
-                    .and()
-                    .withClient("app2")
-                    .authorizedGrantTypes( "refresh_token", "password", "client_credentials")
-                    .authorities("USER")
-                    .scopes("read", "write")
-                    .resourceIds(RESOURCE_ID)
-                    .secret("123456");
+            /**
+             * 设置验证客户端的数据源，需要跟tokenservice一样
+             */
+            clients.jdbc(dataSource);
         }
 
         @Override

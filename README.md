@@ -1,5 +1,5 @@
 # simple-spring-boot-security-demo
-基于spring boot + oauth2的restful api 服务器
+基于spring boot + oauth2 + mybatis的restful api 服务器
 
 # 启动服务
 在根目录执行以下命令：
@@ -39,5 +39,84 @@ result: {"tips":"this is a restful api with authorized", "code":1}
 http://localhost:8080/api1/test 
 ```
 
-# 备注
-此项目结构目前相对比较简单，客户端账号暂时通过写死的方式，存储token暂时使用默认的InMemoryTokenService, 后续将上传通过数据库获取授权客户端的方式，敬请关注。如有需要改进的获取有其他意见可与本人联系，邮箱：hyhsoftware@163.com
+# 新增功能
+1. 整合mybatis，构建完整的MVC基础框架，包含controller,service,dao层，代码检出即用
+2. 通过db管理客户，适合对外提供接口服务的场景
+
+# 建表语句
+注意由于包里边写死了表名，所以表名不可修改。详情可参阅源码：JdbcTokenStore.java JdbcClientDetailsService.java等,如果提示无法插入数据，根据报错信息将有问题的字段类型改成varbinary即可
+```
+
+CREATE TABLE `oauth_access_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token_id` varchar(256) DEFAULT NULL,
+  `token` varbinary(2048) DEFAULT NULL,
+  `authentication_id` varchar(256) DEFAULT NULL,
+  `user_name` varchar(256) DEFAULT NULL,
+  `client_id` varchar(256) DEFAULT NULL,
+  `authentication` varbinary(2048) DEFAULT NULL,
+  `refresh_token` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `oauth_approvals` (
+  `userId` varchar(256) DEFAULT NULL,
+  `clientId` varchar(256) DEFAULT NULL,
+  `scope` varchar(256) DEFAULT NULL,
+  `status` varchar(10) DEFAULT NULL,
+  `expiresAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `lastModifiedAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `oauth_client_details` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(256) DEFAULT NULL,
+  `resource_ids` varchar(256) DEFAULT NULL,
+  `client_secret` varchar(256) DEFAULT NULL,
+  `scope` varchar(256) DEFAULT NULL,
+  `authorized_grant_types` varchar(256) DEFAULT NULL,
+  `web_server_redirect_uri` varchar(256) DEFAULT NULL,
+  `authorities` varchar(256) DEFAULT NULL,
+  `access_token_validity` int(11) DEFAULT NULL,
+  `refresh_token_validity` int(11) DEFAULT NULL,
+  `additional_information` text,
+  `autoapprove` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `oauth_client_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token_id` varchar(256) DEFAULT NULL,
+  `token` text,
+  `authentication_id` varchar(256) DEFAULT NULL,
+  `user_name` varchar(256) DEFAULT NULL,
+  `client_id` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `oauth_code` (
+  `code` varchar(256) DEFAULT NULL,
+  `authentication` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `oauth_refresh_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token_id` varchar(256) DEFAULT NULL,
+  `token` varbinary(2048) DEFAULT NULL,
+  `authentication` varbinary(2048) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--- 测试表 ---
+CREATE TABLE action_log (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NULL,
+  `action_code` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+```
